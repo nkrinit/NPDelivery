@@ -1,21 +1,25 @@
 ﻿using Mediator;
 
+using NPDelivery.Data;
+using NPDelivery.Domain;
+
 namespace NPDelivery.Features.Orders;
 
-public sealed record CreateOrderCommand(int CustomerId, int StoreId, int MenuItemId, int Quantity) : ICommand;
+public sealed record CreateOrderCommand(int CustomerId, int StoreId, List<OrderedProduct> Products, string From, string To) 
+    : ICommand<Order>;
 
-public sealed class CreateOrderHandler : ICommandHandler<CreateOrderCommand>
+public sealed class CreateOrderHandler : ICommandHandler<CreateOrderCommand, Order>
 {
-    private readonly Database _database;
+    private readonly DataContext _context;
 
-    public CreateOrderHandler(Database database)
+    public CreateOrderHandler(DataContext dataContext)
     {
-        _database = database;
+        _context = dataContext;
     }
-    public ValueTask<Unit> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
+    public ValueTask<Order> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
     {
-        _database.AddOrder(new Order(request.CustomerId, request.StoreId, request.MenuItemId, request.Quantity));
-        //to do: return the new order
-        return new ValueTask<Unit>();
+        var order = _context.Orders.Add(new Order(request.CustomerId, request.StoreId, request.Products, request.From, request.To));
+
+        return ValueTask.FromResult(order.Entity);
     }
 }

@@ -2,39 +2,43 @@
 
 using Microsoft.AspNetCore.Mvc;
 
+using NPDelivery.Features.Stores.Dtos;
+
 using Remora.Results;
 
-namespace NPDelivery.Features.Orders;
-
+namespace NPDelivery.Features.Stores;
 [Route("api/[controller]")]
 [ApiController]
-public class OrderController : ControllerBase
+public class StoreKeeperController : ControllerBase
 {
     private readonly IMediator _mediator;
-
-    public OrderController(IMediator mediator)
+    public StoreKeeperController(IMediator mediator)
     {
-        _mediator = mediator;
+        _mediator= mediator;
     }
-
+ 
     [HttpGet("{id:int}")]
-    public async Task<ActionResult<GetOrderResult>> Get(int id)
+    public async Task<ActionResult<GetStoreKeeperResult>> Get(int id)
     {
-        var query = new GetOrderQuery(id);
+        var query = new GetStoreKeeperQuery(id);
         var result = await _mediator.Send(query);
 
         return VerifyResult(result);
     }
 
     [HttpPost]
-    public async Task<IActionResult> Post(CreateOrderCommand command) 
+    public async Task<IActionResult> Post(CreateStoreKeeperCommand command)
     {
         var result = await _mediator.Send(command);
-
         return Ok(result);
     }
 
-    //To do: add PUT endpoint
+    [HttpPut]
+    public async Task<ActionResult<GetStoreKeeperResult>> Put(UpdateStoreKeeperCommand command)
+    {
+        var result = await _mediator.Send(command);
+        return VerifyResult(result);
+    }
 
     private ActionResult<T> VerifyResult<T>(Result<T> result)
     {
