@@ -1,7 +1,10 @@
 using Mediator;
 
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 
+using NPDelivery.Auth;
 using NPDelivery.Data;
 using NPDelivery.Features.Customers;
 using NPDelivery.Features.Orders;
@@ -19,6 +22,15 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddMediator(options => options.ServiceLifetime = ServiceLifetime.Scoped);
 builder.Services.AddScoped(typeof(IPipelineBehavior<,>), typeof(TransactionBehavior<,>));
+
+builder.Services.AddScoped<IAuthorizationService, NPAuthorizationService>();
+builder.Services.AddAuthentication(o =>
+{
+    o.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    o.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    o.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+})
+.AddCookie(CookieAuthenticationDefaults.AuthenticationScheme);
 
 AddMappers(builder);
 
@@ -41,6 +53,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
