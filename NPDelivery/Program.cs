@@ -23,14 +23,46 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddMediator(options => options.ServiceLifetime = ServiceLifetime.Scoped);
 builder.Services.AddScoped(typeof(IPipelineBehavior<,>), typeof(TransactionBehavior<,>));
 
-builder.Services.AddScoped<IAuthorizationService, NPAuthorizationService>();
+builder.Services.AddAuthorization(o =>
+{
+    o.AddPolicy(PolicyNames.Customer, p => p
+        .RequireClaim(CustomClaimTypes.Role, ApplicationRole.Customer.ToString()));
+
+    o.AddPolicy(PolicyNames.Courier, p => p
+        .RequireClaim(CustomClaimTypes.Role, ApplicationRole.Courier.ToString()));
+
+    o.AddPolicy(PolicyNames.StoreKeeper, p => p
+        .RequireClaim(CustomClaimTypes.Role, ApplicationRole.StoreKeeper.ToString()));
+
+    o.AddPolicy(PolicyNames.Admin, p => p
+        .RequireClaim(CustomClaimTypes.Role, ApplicationRole.Admin.ToString()));
+
+    o.AddPolicy(PolicyNames.Support, p => p
+        .RequireClaim(CustomClaimTypes.Role, ApplicationRole.Support.ToString()));
+});
+
 builder.Services.AddAuthentication(o =>
 {
     o.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
     o.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
     o.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
 })
-.AddCookie(CookieAuthenticationDefaults.AuthenticationScheme);
+.AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, o =>
+{
+    o.AccessDeniedPath = null;
+    o.LoginPath = null;
+    o.LogoutPath = null;
+    o.Events.OnRedirectToLogin = context =>
+    {
+        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+        return Task.CompletedTask; 
+    };
+    o.Events.OnRedirectToAccessDenied = context =>
+    {
+        context.Response.StatusCode = StatusCodes.Status403Forbidden;
+        return Task.CompletedTask;
+    };
+});
 
 AddMappers(builder);
 

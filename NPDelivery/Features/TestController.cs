@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
+using NPDelivery.Auth;
+
 namespace NPDelivery.Features;
 
 [ApiController]
@@ -25,7 +27,7 @@ public class TestController : ControllerBase
         {
             new Claim(ClaimsIdentity.DefaultNameClaimType, username)
         };
-        var user = new ClaimsPrincipal(new ClaimsIdentity(claims, "Cookies"));
+        var user = new ClaimsPrincipal(new ClaimsIdentity(claims, AuthenticationTypes.Password));
         
         await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, user);
         return Ok();
