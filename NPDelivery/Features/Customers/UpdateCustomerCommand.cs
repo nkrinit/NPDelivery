@@ -8,7 +8,7 @@ using Remora.Results;
 
 namespace NPDelivery.Features.Customers;
 
-public sealed record UpdateCustomerCommand(int CustomerId, string Name, string Surname, string Address) : ICommand<Result<GetCustomerResult>>;
+public sealed record UpdateCustomerCommand(int CustomerId, string Name, string Surname, string Address, string Email, string Phone) : ICommand<Result<GetCustomerResult>>;
 
 public sealed class UpdateCustomerHandler : ICommandHandler<UpdateCustomerCommand, Result<GetCustomerResult>>
 {
@@ -32,7 +32,7 @@ public sealed class UpdateCustomerHandler : ICommandHandler<UpdateCustomerComman
             return new NotFoundError();
         }
 
-        customer.Update(request.Name, request.Surname, request.Address);
+        customer.Update(request.Name, request.Surname, request.Address, request.Email, request.Phone);
 
         var result = _mapper.CustomeroGetCustomerResult(customer);
 

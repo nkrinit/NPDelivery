@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Update.Internal;
-
-namespace NPDelivery.Domain;
+﻿namespace NPDelivery.Domain;
 
 public class Product : IHasPrice
 {

@@ -12,12 +12,16 @@ namespace NPDelivery.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            //Add HiLo
+            migrationBuilder.CreateSequence(
+               name: "EntityFrameworkHiLoSequence",
+               incrementBy: 10);
+
             migrationBuilder.CreateTable(
                 name: "Customers",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<int>(type: "int", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Surname = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Address = table.Column<string>(type: "nvarchar(max)", nullable: false)
@@ -31,8 +35,7 @@ namespace NPDelivery.Migrations
                 name: "Orders",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<int>(type: "int", nullable: false),
                     CustomerId = table.Column<int>(type: "int", nullable: false),
                     StoreId = table.Column<int>(type: "int", nullable: false),
                     CourierId = table.Column<int>(type: "int", nullable: true),
@@ -49,7 +52,6 @@ namespace NPDelivery.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1")
                 },
                 constraints: table =>
                 {
@@ -60,8 +62,7 @@ namespace NPDelivery.Migrations
                 name: "Stores",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<int>(type: "int", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
                     StoreKeeperId = table.Column<int>(type: "int", nullable: false),
@@ -83,8 +84,7 @@ namespace NPDelivery.Migrations
                 name: "Products",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<int>(type: "int", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
                     Price = table.Column<int>(type: "int", nullable: false),
@@ -127,46 +127,6 @@ namespace NPDelivery.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.InsertData(
-                table: "Customers",
-                columns: new[] { "Id", "Address", "Name", "Surname" },
-                values: new object[] { 5, "Shadow street, 24", "Nora", "Krinitskaya" });
-
-            migrationBuilder.InsertData(
-                table: "Orders",
-                columns: new[] { "Id", "CourierId", "CustomerId", "From", "StoreId", "To" },
-                values: new object[] { 6, null, 5, "Light street, 42", 3, "Shadow street, 24" });
-
-            migrationBuilder.InsertData(
-                table: "StoreKeepers",
-                column: "Id",
-                value: 2);
-
-            migrationBuilder.InsertData(
-                table: "Stores",
-                columns: new[] { "Id", "Address", "Description", "Name", "Score", "StoreKeeperId" },
-                values: new object[] { 3, "Light street, 42", "Description", "Name", 0, 2 });
-
-            migrationBuilder.InsertData(
-                table: "Products",
-                columns: new[] { "Id", "Description", "IsAvailable", "Name", "Price", "StoreId" },
-                values: new object[,]
-                {
-                    { 4, "White chocolate", true, "Chocolate bar", 1100, 3 },
-                    { 41, "Milk chocolate", true, "Chocolate bar", 1100, 3 },
-                    { 42, "Dark chocolate", true, "Chocolate bar", 1100, 3 }
-                });
-
-            migrationBuilder.InsertData(
-                table: "OrderedProducts",
-                columns: new[] { "OrderId", "ProductId", "Quantity" },
-                values: new object[,]
-                {
-                    { 6, 4, 1 },
-                    { 6, 41, 1 },
-                    { 6, 42, 1 }
-                });
-
             migrationBuilder.CreateIndex(
                 name: "IX_OrderedProducts_ProductId",
                 table: "OrderedProducts",
@@ -186,6 +146,10 @@ namespace NPDelivery.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            //Remove HiLo
+            migrationBuilder.DropSequence(
+                name: "EntityFrameworkHiLoSequence");
+
             migrationBuilder.DropTable(
                 name: "Customers");
 

@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 using NPDelivery.Domain;
@@ -12,10 +11,9 @@ public class CustomerConfiguration : IEntityTypeConfiguration<Customer>
     {
         builder.Property(x => x.Name).HasMaxLength(50);
         builder.Property(x => x.Surname).HasMaxLength(50);
-
-        builder.HasData(new Customer("Nora", "Krinitskaya", "Shadow street, 24")
-        {
-            Id = 5,
-        });
+        builder.Property(x => x.Address).HasMaxLength(100);
+        builder.Property(x => x.Email).HasMaxLength(50);
+        builder.Property(x => x.PhoneNumber).HasMaxLength(15);
+        builder.Property(x => x.Remark).HasMaxLength(200);
     }
 }

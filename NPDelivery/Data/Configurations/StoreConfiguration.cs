@@ -12,21 +12,11 @@ public class StoreConfiguration : IEntityTypeConfiguration<Store>, IEntityTypeCo
         builder
             .HasMany(x => x.Stores)
             .WithOne(x => x.StoreKeeper);
-
-        builder.HasData(new StoreKeeper
-        {
-            Id = 2
-        });
     }
 
     public void Configure(EntityTypeBuilder<Store> builder)
     {
         builder.Property(x => x.Name).HasMaxLength(200);
         builder.Property(x => x.Description).HasMaxLength(1000);
-
-        builder.HasData(new Store("Name", "Description", 2, "Light street, 42")
-        {
-            Id = 3,
-        });
     }
 }

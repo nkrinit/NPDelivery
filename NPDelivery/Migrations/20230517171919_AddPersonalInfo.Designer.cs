@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NPDelivery.Data;
 
@@ -11,19 +12,18 @@ using NPDelivery.Data;
 namespace NPDelivery.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20230517171919_AddPersonalInfo")]
+    partial class AddPersonalInfo
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "7.0.5")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
-            SqlServerModelBuilderExtensions.UseHiLo(modelBuilder, "EntityFrameworkHiLoSequence");
-
-            modelBuilder.HasSequence("EntityFrameworkHiLoSequence")
-                .IncrementsBy(10);
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
             modelBuilder.Entity("NPDelivery.Domain.Customer", b =>
                 {
@@ -31,7 +31,7 @@ namespace NPDelivery.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseHiLo(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Address")
                         .IsRequired()
@@ -66,6 +66,18 @@ namespace NPDelivery.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Customers");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 5,
+                            Address = "Shadow street, 24",
+                            Email = "norakrinitskaya@gmail.com",
+                            Name = "Nora",
+                            PhoneNumber = "+380335552721",
+                            Remark = "",
+                            Surname = "Krinitskaya"
+                        });
                 });
 
             modelBuilder.Entity("NPDelivery.Domain.Order", b =>
@@ -74,7 +86,7 @@ namespace NPDelivery.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseHiLo(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int?>("CourierId")
                         .HasColumnType("int");
@@ -98,6 +110,16 @@ namespace NPDelivery.Migrations
                     b.HasIndex("CustomerId");
 
                     b.ToTable("Orders");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 6,
+                            CustomerId = 5,
+                            From = "Light street, 42",
+                            StoreId = 3,
+                            To = "Shadow street, 24"
+                        });
                 });
 
             modelBuilder.Entity("NPDelivery.Domain.OrderedProduct", b =>
@@ -116,6 +138,26 @@ namespace NPDelivery.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("OrderedProducts");
+
+                    b.HasData(
+                        new
+                        {
+                            OrderId = 6,
+                            ProductId = 4,
+                            Quantity = 1
+                        },
+                        new
+                        {
+                            OrderId = 6,
+                            ProductId = 41,
+                            Quantity = 1
+                        },
+                        new
+                        {
+                            OrderId = 6,
+                            ProductId = 42,
+                            Quantity = 1
+                        });
                 });
 
             modelBuilder.Entity("NPDelivery.Domain.Product", b =>
@@ -124,7 +166,7 @@ namespace NPDelivery.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseHiLo(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -150,6 +192,35 @@ namespace NPDelivery.Migrations
                     b.HasIndex("StoreId");
 
                     b.ToTable("Products");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 4,
+                            Description = "White chocolate",
+                            IsAvailable = true,
+                            Name = "Chocolate bar",
+                            Price = 1100,
+                            StoreId = 3
+                        },
+                        new
+                        {
+                            Id = 41,
+                            Description = "Milk chocolate",
+                            IsAvailable = true,
+                            Name = "Chocolate bar",
+                            Price = 1100,
+                            StoreId = 3
+                        },
+                        new
+                        {
+                            Id = 42,
+                            Description = "Dark chocolate",
+                            IsAvailable = true,
+                            Name = "Chocolate bar",
+                            Price = 1100,
+                            StoreId = 3
+                        });
                 });
 
             modelBuilder.Entity("NPDelivery.Domain.Store", b =>
@@ -158,7 +229,7 @@ namespace NPDelivery.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseHiLo(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Address")
                         .IsRequired()
@@ -185,6 +256,17 @@ namespace NPDelivery.Migrations
                     b.HasIndex("StoreKeeperId");
 
                     b.ToTable("Stores");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 3,
+                            Address = "Light street, 42",
+                            Description = "Description",
+                            Name = "Name",
+                            Score = 0,
+                            StoreKeeperId = 2
+                        });
                 });
 
             modelBuilder.Entity("NPDelivery.Domain.StoreKeeper", b =>
@@ -193,11 +275,17 @@ namespace NPDelivery.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseHiLo(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.HasKey("Id");
 
                     b.ToTable("StoreKeepers");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 2
+                        });
                 });
 
             modelBuilder.Entity("NPDelivery.Domain.Order", b =>
