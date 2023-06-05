@@ -34,7 +34,7 @@ public sealed class UpdateCustomerHandler : ICommandHandler<UpdateCustomerComman
 
         customer.Update(request.Name, request.Surname, request.Address, request.Email, request.Phone);
 
-        var result = _mapper.CustomeroGetCustomerResult(customer);
+        var result = _mapper.CustomerToGetCustomerResult(customer);
 
         return result;
     }

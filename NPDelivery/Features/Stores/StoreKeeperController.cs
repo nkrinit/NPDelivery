@@ -33,12 +33,13 @@ public class StoreKeeperController : ControllerBase
         return Ok(result);
     }
 
-    [HttpPut]
-    public async Task<ActionResult<GetStoreKeeperResult>> Put(UpdateStoreKeeperCommand command)
-    {
-        var result = await _mediator.Send(command);
-        return VerifyResult(result);
-    }
+    // To extend
+    //[HttpPut]
+    //public async Task<ActionResult<GetStoreKeeperResult>> Put(UpdateStoreKeeperCommand command)
+    //{
+    //    var result = await _mediator.Send(command);
+    //    return VerifyResult(result);
+    //}
 
     private ActionResult<T> VerifyResult<T>(Result<T> result)
     {

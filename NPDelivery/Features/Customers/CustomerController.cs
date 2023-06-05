@@ -18,7 +18,7 @@ public class CustomerController : ControllerBase
     }
 
     [HttpGet("{id:int}")]
-    public async Task<ActionResult<GetCustomerResult>> GetAsync(int id)
+    public async Task<ActionResult<GetCustomerResult>> Get(int id)
     {
         var query = new GetCustomerQuery(id);
         var result = await _mediator.Send(query);

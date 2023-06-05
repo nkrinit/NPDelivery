@@ -14,6 +14,11 @@ public class DataContext : DbContext
     public DbSet<StoreKeeper> StoreKeepers { get; set; }
     //public DbSet<Address> Addresses { get; set; }
 
+    public DbSet<Courier> Couriers { get; set; }
+    public DbSet<Shift> Shifts { get; set; }
+
+    public DbSet<User> Users { get; set; }
+
     public DataContext(DbContextOptions dbContextOptions) : base(dbContextOptions)
     {
 

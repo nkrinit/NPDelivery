@@ -1,44 +1,46 @@
 ﻿using Mediator;
 
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-
-using NPDelivery.Auth;
 
 using Remora.Results;
 
-namespace NPDelivery.Features.Orders;
-
+namespace NPDelivery.Features.Couriers;
 [Route("api/[controller]")]
 [ApiController]
-public class OrderController : ControllerBase
+public class CourierController : ControllerBase
 {
     private readonly IMediator _mediator;
 
-    public OrderController(IMediator mediator)
+    public CourierController(IMediator mediator)
     {
         _mediator = mediator;
     }
 
     [HttpGet("{id:int}")]
-    public async Task<ActionResult<GetOrderResult>> Get(int id)
+    public async Task<ActionResult<GetCourierResult>> Get(int id)
     {
-        var query = new GetOrderQuery(id);
+        var query = new GetCourierQuery(id);
         var result = await _mediator.Send(query);
 
         return VerifyResult(result);
     }
 
-    [Authorize(Policy = PolicyNames.Customer)]
     [HttpPost]
-    public async Task<IActionResult> Post(CreateOrderCommand command) 
+    public async Task<IActionResult> Post(CreateCourierCommand command)
     {
         var result = await _mediator.Send(command);
 
         return Ok(result);
     }
 
-    //To do: add PUT endpoint
+
+    [HttpPut]
+    public async Task<ActionResult<GetCourierResult>> Put(UpdateCourierCommand command)
+    {
+        var result = await _mediator.Send(command);
+
+        return VerifyResult(result);
+    }
 
     private ActionResult<T> VerifyResult<T>(Result<T> result)
     {

@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Isopoh.Cryptography.Argon2" Version="1.1.12" />
     <PackageReference Include="Mediator.Abstractions" Version="2.1.1" />
     <PackageReference Include="Mediator.SourceGenerator" Version="2.1.1">
       <PrivateAssets>all</PrivateAssets>
@@ -22,10 +23,6 @@
     <PackageReference Include="Remora.Results" Version="7.2.3" />
     <PackageReference Include="Riok.Mapperly" Version="2.7.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Features\Couriers\" />
   </ItemGroup>
 
 </Project>

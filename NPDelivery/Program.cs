@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 using Mediator;
 
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -6,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 using NPDelivery.Auth;
 using NPDelivery.Data;
+using NPDelivery.Features.Couriers;
 using NPDelivery.Features.Customers;
 using NPDelivery.Features.Orders;
 using NPDelivery.Features.Products;
@@ -16,13 +19,19 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(x =>
+    {
+        x.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddMediator(options => options.ServiceLifetime = ServiceLifetime.Scoped);
 builder.Services.AddScoped(typeof(IPipelineBehavior<,>), typeof(TransactionBehavior<,>));
 
+// Add policies
 builder.Services.AddAuthorization(o =>
 {
     o.AddPolicy(PolicyNames.Customer, p => p
@@ -41,6 +50,7 @@ builder.Services.AddAuthorization(o =>
         .RequireClaim(CustomClaimTypes.Role, ApplicationRole.Support.ToString()));
 });
 
+// N.B. to use Jwt/"Bearer" auth scheme, go with JwtBearerDefaults.AuthenticationScheme + .AddJwtBearer() afterwards
 builder.Services.AddAuthentication(o =>
 {
     o.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -62,6 +72,11 @@ builder.Services.AddAuthentication(o =>
         context.Response.StatusCode = StatusCodes.Status403Forbidden;
         return Task.CompletedTask;
     };
+    //o.Events.OnRedirectToLogout = context =>
+    //{
+    //    context.RedirectUri = "/Login";
+    //    return Task.CompletedTask;
+    //};
 });
 
 AddMappers(builder);
@@ -76,6 +91,8 @@ builder.Services.AddDbContext<DataContext>(options =>
 
 var app = builder.Build();
 
+// N.B. Below are middlewares
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -85,6 +102,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+// Auth
 app.UseAuthentication();
 app.UseAuthorization();
 
@@ -98,4 +116,5 @@ static void AddMappers(WebApplicationBuilder builder)
     builder.Services.AddSingleton<ProductMapper>();
     builder.Services.AddSingleton<StoreMapper>();
     builder.Services.AddSingleton<CustomerMapper>();
+    builder.Services.AddSingleton<CourierMapper>();
 }

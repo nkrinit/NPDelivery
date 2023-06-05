@@ -10,7 +10,7 @@ namespace NPDelivery.Features.Customers;
 
 public sealed record GetCustomerQuery(int CustomerId) : IQuery<Result<GetCustomerResult>>;
 
-public sealed record GetCustomerResult(int CustomerId, string Name, string Surname, string Address);
+public sealed record GetCustomerResult(int CustomerId, string Name, string Surname, string Address, string PhoneNumber);
 
 public sealed class GetCustomerHandler : IQueryHandler<GetCustomerQuery, Result<GetCustomerResult>>
 {
@@ -33,7 +33,7 @@ public sealed class GetCustomerHandler : IQueryHandler<GetCustomerQuery, Result<
             return new NotFoundError();
         }
 
-        var result = _mapper.CustomeroGetCustomerResult(customer);
+        var result = _mapper.CustomerToGetCustomerResult(customer);
 
         return result;
     }

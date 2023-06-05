@@ -22,7 +22,7 @@ public sealed class CreateCustomerHandler : ICommandHandler<CreateCustomerComman
     {
         var customer = _context.Customers.Add(new Customer(request.Name, request.Surname, request.Address, request.Email, request.Phone));
 
-        var result = _mapper.CustomeroGetCustomerResult(customer.Entity);
+        var result = _mapper.CustomerToGetCustomerResult(customer.Entity);
 
         return ValueTask.FromResult(result);
     }

@@ -6,9 +6,9 @@ using NPDelivery.Features.Stores.Dtos;
 
 namespace NPDelivery.Features.Stores;
 
-public sealed record CreateStoreKeeperCommand() : ICommand<GetStoreKeeperResult>;
+public sealed record CreateStoreKeeperCommand() : ICommand<CreateStoreKeeperResult>;
 
-public sealed class CreateStoreKeeperHandler : ICommandHandler<CreateStoreKeeperCommand, GetStoreKeeperResult>
+public sealed class CreateStoreKeeperHandler : ICommandHandler<CreateStoreKeeperCommand, CreateStoreKeeperResult>
 {
     private readonly DataContext _context;
     private readonly StoreMapper _mapper;
@@ -19,12 +19,12 @@ public sealed class CreateStoreKeeperHandler : ICommandHandler<CreateStoreKeeper
         _mapper = mapper;
     }
 
-    public ValueTask<GetStoreKeeperResult> Handle(CreateStoreKeeperCommand request, CancellationToken cancellationToken)
+    public ValueTask<CreateStoreKeeperResult> Handle(CreateStoreKeeperCommand request, CancellationToken cancellationToken)
     {
         var store = _context.StoreKeepers.Add(new StoreKeeper());
 
-        var result = _mapper.StoreKeeperToGetStoreKeeperResult(store.Entity);
+        var result = _mapper.StoreKeeperToCreateStoreKeeperResult(store.Entity);
 
-        return new ValueTask<GetStoreKeeperResult>(result);
+        return new ValueTask<CreateStoreKeeperResult>(result);
     }
 }
